@@ -1,0 +1,54 @@
+#include <iostream>
+#include <vector>
+
+class Graph {
+private:
+    int vertices;
+    std::vector<std::vector<int>> adj_list;
+
+public:
+    Graph(int v) : vertices(v), adj_list(v) {}
+
+    void add_edge(int u, int v) {
+        adj_list[u].push_back(v);
+    }
+
+    bool dfs(int source, int target, std::vector<bool>& visited) {
+        visited[source] = true;
+        if (source == target) {
+            return true;
+        }
+        for (int neighbor : adj_list[source]) {
+            if (!visited[neighbor]) {
+                if (dfs(neighbor, target, visited)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    bool has_path(int source, int target) {
+        std::vector<bool> visited(vertices, false);
+        return dfs(source, target, visited);
+    }
+};
+
+int main() {
+    Graph g(6);
+    g.add_edge(0, 1);
+    g.add_edge(1, 2);
+    g.add_edge(2, 3);
+    g.add_edge(3, 4);
+    g.add_edge(4, 5);
+
+    int source_vertex = 0;
+    int target_vertex = 4;
+    if (g.has_path(source_vertex, target_vertex)) {
+        std::cout << "Path exists between " << source_vertex << " and " << target_vertex << ".\n";
+    } else {
+        std::cout << "No path exists between " << source_vertex << " and " << target_vertex << ".\n";
+    }
+
+    return 0;
+}
