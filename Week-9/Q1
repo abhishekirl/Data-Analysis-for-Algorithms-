@@ -1,0 +1,41 @@
+class Item:
+    def _init_(self, weight, value, index):
+        self.weight = weight
+        self.value = value
+        self.index = index
+        self.value_per_weight = value / weight
+
+def fractional_knapsack(weights, values, capacity):
+    items = []
+    n = len(weights)
+    
+    for i in range(n):
+        items.append(Item(weights[i], values[i], i))
+    
+    items.sort(key=lambda x: x.value_per_weight, reverse=True)
+    
+    total_value = 0
+    selected_items = []
+    
+    for item in items:
+        if capacity <= 0:
+            break
+        fraction = min(1, capacity / item.weight)
+        total_value += fraction * item.value
+        capacity -= fraction * item.weight
+        selected_items.append((item.index, fraction))
+    
+    return total_value, selected_items
+
+
+N = int(input("Enter the number of items: "))
+weights = list(map(int, input("Enter the weights of items: ").split()))
+values = list(map(int, input("Enter the values of items: ").split()))
+capacity = int(input("Enter the maximum capacity of knapsack: "))
+
+
+max_value, selected_items = fractional_knapsack(weights, values, capacity)
+print("Maximum value:", max_value)
+print("Selected items:")
+for item in selected_items:
+    print("Item", item[0]+1, ":", item[1])
